@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"github.com/gorilla/mux"
 	"log"
+	"math/rand"
 	"net/http"
+	"strconv"
 )
 
 // Book Struct (Model)
@@ -28,7 +30,7 @@ var books []Book
 func getBooks(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if err := json.NewEncoder(w).Encode(books); err != nil {
-		log.Fatalln(err, "Error")
+		log.Fatalln("Error: ", err)
 	}
 }
 // Get A Single Book
@@ -39,18 +41,27 @@ func getBook(w http.ResponseWriter, r *http.Request) {
 	for _, item := range books {
 		if item.ID == params["id"] {
 			if err := json.NewEncoder(w).Encode(item); err != nil {
-				log.Fatalln(err, "Error")
+				log.Fatalln("Error: ", err)
 			}
 			return
 		}
 	}
 	if err := json.NewEncoder(w).Encode(&Book{}); err != nil {
-		log.Fatalln(err, "Error")
+		log.Fatalln(err)
 	}
 }
 
 // Create A Book
-func createBook(_ http.ResponseWriter, _ *http.Request) {}
+func createBook(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	var book Book
+	_ = json.NewDecoder(r.Body).Decode(&book)
+	book.ID = strconv.Itoa(rand.Intn(10000000)) // Mock ID - not safe (not for production)
+	books = append(books, book)
+	if err := json.NewEncoder(w).Encode(book); err != nil {
+		log.Fatalln("Error: ", err)
+	}
+}
 
 // Update A Book
 func updateBook(_ http.ResponseWriter, _ *http.Request) {}
