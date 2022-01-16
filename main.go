@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
@@ -11,7 +12,7 @@ type Book struct {
 	ID		string	`json:"id"`
 	Isbn	string	`json:"isbn"`
 	Title	string	`json:"title"`
-	Author	*Author	`json:"id"`
+	Author	*Author	`json:"author"`
 }
 
 // Author Struct
@@ -24,7 +25,12 @@ type Author struct {
 var books []Book
 
 // Get All Books
-func getBooks(w http.ResponseWriter, r *http.Request) {}
+func getBooks(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	if err := json.NewEncoder(w).Encode(books); err != nil {
+		log.Fatalln(err, "Error")
+	}
+}
 // Get A Book
 func getBook(w http.ResponseWriter, r *http.Request) {}
 // Create A Book
@@ -40,6 +46,7 @@ func main() {
 
 	// Mock Data - @todo - implement DB
 	books = append(books, Book{ID: "1", Isbn: "448743", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}})
+	books = append(books, Book{ID: "2", Isbn: "681565", Title: "Book Two", Author: &Author{Firstname: "Steve", Lastname: "Smith"}})
 
 	// Route Handlers / Endpoints
 	router.HandleFunc("/api/books", getBooks).Methods("GET")
