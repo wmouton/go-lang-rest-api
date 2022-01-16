@@ -10,5 +10,14 @@ import (
 )
 
 func main() {
-	fmt.Println("Hello, World!")
+	// Init Router
+	router := mux.NewRouter()
+
+	// Route Handlers / Endpoints
+	router.HandleFunc("/api/books", getBooks).Method("GET")
+	router.HandleFunc("/api/books/{id}", getBook).Method("GET")
+	router.HandleFunc("/api/books", createBook).Method("POST")
+	router.HandleFunc("/api/books/{id}", updateBook).Method("PUT")
+	router.HandleFunc("/api/books/{id}", deleteBook).Method("DELETE")
+
 }
