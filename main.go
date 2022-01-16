@@ -1,27 +1,27 @@
 package main
 
 import (
-	"encoding/json"
+	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	"math/rand"
-	"strconv"
-	"github.com/gorilla/mux"
 )
 
 // Book Struct (Model)
 type Book struct {
 	ID		string	`json:"id"`
-	Iibn	string	`json:"isbn"`
-	Iitle	string	`json:"title"`
+	Isbn	string	`json:"isbn"`
+	Title	string	`json:"title"`
 	Author	*Author	`json:"id"`
 }
 
 // Author Struct
 type Author struct {
-	Firstname	string	`json:"firstname"'`
+	Firstname	string	`json:"firstname"`
 	Lastname	string `json:"lastname"`
 }
+
+// Init books variable as a slice Book struct
+var books []Book
 
 // Get All Books
 func getBooks(w http.ResponseWriter, r *http.Request) {}
@@ -37,6 +37,9 @@ func deleteBook(w http.ResponseWriter, r *http.Request) {}
 func main() {
 	// Init Router
 	router := mux.NewRouter()
+
+	// Mock Data - @todo - implement DB
+	books = append(books, Book{ID: "1", Isbn: "448743", Title: "Book One", Author: &Author{Firstname: "John", Lastname: "Doe"}})
 
 	// Route Handlers / Endpoints
 	router.HandleFunc("/api/books", getBooks).Methods("GET")
